@@ -43,18 +43,28 @@ public class ProdutoService {
         O método utiliza o método privado obter para buscar o produto no banco de dados, e em seguida converte o produto em um ProdutoResponse utilizando o método de da classe ProdutoResponse.
      */
     @Transactional(readOnly = true)
-    public ProdutoResponse buscarPorId(Long id){
+    public ProdutoResponse buscar(Long id){
         return ProdutoResponse.de(obter(id));
     }
 
     /* Método criar é responsável por criar um novo produto no sistema. Ele recebe como parâmetro um objeto ProdutoRequest(req) que contém os dados do produto a ser criado, e retorna um objeto ProdutoResponse correspondente ao produto criado.
-        O método cria um novo objeto Produto, preenche seus campos com os dados do ProdutoRequest utilizando o método privado preencher, e em seguida salva o produto no banco de dados utilizando o repositório produtos. Por fim, ele converte o produto salvo em um ProdutoResponse utilizando o método "de" da classe ProdutoResponse e retorna o resultado.
+     *   O método cria um novo objeto Produto, preenche seus campos com os dados do ProdutoRequest utilizando o método privado preencher, e em seguida salva o produto no banco de dados utilizando o repositório produtos. Por fim, ele converte o produto salvo em um ProdutoResponse utilizando o método "de" da classe ProdutoResponse e retorna o resultado.
      */
     @Transactional
     public ProdutoResponse criar(ProdutoRequest req){
         Produto produto = new Produto();
         preencher(produto,req);
         return ProdutoResponse.de(produtos.save(produto));
+    }
+
+    /* Método atualizar é responsável por atualizar os dados de um produto existente no sistema. Ele recebe como parâmetros o ID do produto(id) e um objeto ProdutoRequest(req) que contém os novos dados do produto, e retorna um objeto ProdutoResponse correspondente ao produto atualizado.
+        O método utiliza o método privado obter para buscar o produto no banco de dados, e em seguida preenche os campos do produto com os novos dados do ProdutoRequest utilizando o método privado preencher. Por fim, ele salva o produto atualizando no banco de dados utilizando o repositório produtos e converte o produto salvo em um ProdutoResponse utilizando o método "de" da classe ProdutoResponse e retorna o resultado.
+    */
+    @Transactional 
+    public ProdutoResponse atualizar(Long id, ProdutoRequest req){
+        Produto p = obter(id);
+        preencher(p, req);
+        return ProdutoResponse.de(produtos.save(p));
     }
 
     /* Método desativar é responsável por desativar um produto no sistema. Ele recebe como parâmetro o ID do produto(id) e não retorna nenhum valor.
