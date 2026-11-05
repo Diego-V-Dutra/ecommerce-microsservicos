@@ -16,7 +16,7 @@ public record ProdutoRequest(
     @NotBlank @Size(max = 150) String nome,
     @Size(max = 500) String descricao,
     @NotNull  @DecimalMin("0.01") BigDecimal preco,
-    @NotNull @Min(0) Integer quantidade,
+    @NotNull @Min(0) Integer estoque,
     @NotNull Long categoriaId){
 }
 
