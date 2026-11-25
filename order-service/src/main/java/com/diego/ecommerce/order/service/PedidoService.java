@@ -68,4 +68,10 @@ public class PedidoService {
             new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado"));
         return PedidoResponse.de(pedido);
     }
+    /*A transação aqui é necessária porque getItens() é carregado sob demanda (LAZY): sem a transação aberta, o acesso à lista daria LazyInitializationException.
+
+        Dois pontos para ficarem anotados:
+    1 - O estoque não é baixado. Hoje o pedido só confere o estoque, mas o catálogo continua mostrando o mesmo número depois da compra. Para baixar, o catálogo precisa de um endpoint novo (algo como "reservar estoque"), e é o tipo de coisa que complica microsserviços: se o pedido for salvo e a baixa falhar, os dois bancos ficam inconsistentes. Voltamos a isso quando o pagamento entrar.
+    2 -A chamada HTTP acontece dentro da transação, então a conexão com o banco fica ocupada enquanto o catálogo responde. Para um projeto de estudo está bem, mas em produção costuma-se consultar o catálogo antes de abrir a transação.
+     */
 }
